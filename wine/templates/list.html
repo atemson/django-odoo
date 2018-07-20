@@ -1,0 +1,19 @@
+{% extends "base.html"%}
+
+
+{% block title%} Customer Contact List {% endblock %}
+
+
+{% block content %}
+<div >
+
+    <h1><b>Customer List</b></h1>
+    <p></p>
+</div>
+<ul>
+     {% for partner in partners %}
+     <li> {{partner.id}} {{partner.name}} {{partner.city}} {{partner.email}} {{partner.phone}} - <a href="{% url 'delete' partner.id %}">delete</a></li>
+       
+    {% endfor %}
+</ul>
+{% endblock %}

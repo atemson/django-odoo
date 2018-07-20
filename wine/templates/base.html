@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<link href="https://font.googleapis.com/css?family=Satisfy" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+ {% load static %}
+<html lang="en">
+
+<head>
+<style type="text/css">
+        body {
+          background: url({% static "images/th.jpeg" %});
+          background-size: cover;
+        }
+
+        .heading {
+            color: white;
+            font-family: 'Sedgwick Ave Display', cursive;
+            font-size: 10vw;
+            letter-spacing: 20px;
+            color: rgb(0, 255, 170);
+            padding-top: 20px;
+            font-family: 'Cabin Sketch', cursive;
+        }
+
+        .data-rows {
+            padding-top: 10px;
+        }
+
+        .textfield-labels {
+            color: white;
+            font-weight: 600;
+        }
+
+        .textfield {
+            border: 5px solid black;
+        }
+
+        .signup-heading {
+            color: white;
+            font-family: 'Dosis', sans-serif;
+            letter-spacing: 20px;
+        }
+
+        .bored {
+            height: 300px;
+            width: 300px;
+        }
+
+        .font-icons {
+            color: white;
+            font-size: 50px;
+        }
+
+        .description {
+            color: white;
+            font-weight: 600;
+        }
+
+        .first-description {
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid rgb(117, 19, 19);
+            animation-name: first-block;
+            animation-duration: 6s;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+        }
+
+        .left-column {
+            padding: 20px;
+        }
+
+         ::-moz-placeholder {
+            text-align: center;
+        }
+
+         ::-webkit-input-placeholder {
+            text-align: center;
+        }
+
+        @keyframes first-block {
+            from {
+                background-color: rgba(255, 0, 0, 0);
+            }
+            to {
+                background-color: rgb(117, 19, 19);
+            }
+        }
+    </style>
+   <nav class="navbar navbar-inverse">
+	<div class="container-fluid full">
+
+	    <!-- Header -->
+		<div class="navbar-header">
+		   <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+		   	   <span class="icon-bar"></span>
+		   	   <span class="icon-bar"></span>
+		   	   <span class="icon-bar"></span>
+		   </button>
+		   <a class="navbar-brand" href="{% url 'index' %}">odoowine</a>
+		</div>
+         
+        <!-- Items -->
+        <div class="collapse navbar-collapse">
+        	<ul class="nav navbar-nav"> 
+        		<li class="">
+        			<a href="{% url 'customer' %}">
+        				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;
+        				Customers
+        			</a>
+        		</li>
+        		<li class="">
+        			<a href="{% url 'product' %}">
+        				<span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>&nbsp;
+        				Products
+        			</a>
+        		</li>
+        		<li class="">
+        			<a href="{% url 'sale' %}">
+        				<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>&nbsp;
+        				Sales
+        			</a>
+        		</li>
+        		<li class="">
+        			<a href="{% url 'purchase' %}">
+        				<span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>&nbsp;
+        				Purchase
+        			</a>
+        		</li>
+        		
+        	</ul>
+        </div>
+
+	</div>
+</nav>
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+   <div>
+      <div>
+         <h1>Odoo Wine</h1>
+         {% block content %}{% endblock %}
+         {% block footer %}
+        <hr>
+        <p>Thanks for visiting</p>
+       {% endblock %}
+      </div>
+   </div>
+</body>
+</html>

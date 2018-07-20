@@ -1,0 +1,36 @@
+{% extends "base.html"%}
+
+
+{% block title%} Customer Contact List {% endblock %}
+
+
+{% block content %}
+<div >
+
+    <h1><b>Customer List</b></h1>
+    <p></p>
+</div>
+<ul>
+<table border="1">
+     <tr>
+     	<th>ID</th>
+     	<th>Name</th>
+     	<th>City</th>
+     	<th>Email</th>
+     	<th>Phone</th>
+
+     </tr>
+     <tr>
+     {% for partner in partners %}
+     <td> {{partner.id}} </td>
+     <td> {{partner.name}} </td>
+     <td> {{partner.city}} </td>
+     <td> {{partner.email}} </td>
+     <td> {{partner.phone}} </td>
+     <td><a href=" {% url 'delete' %}" class="btn btn-danger" role="button" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+     <td><a href="#" class="btn btn-primary" role="button" ><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+     </tr>
+{% endfor %}
+</table>
+</ul>
+{% endblock %}

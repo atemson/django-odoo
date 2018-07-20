@@ -1,0 +1,94 @@
+body {
+          background: url({% static "images/th.jpeg" %});
+          background-size: cover;
+        }
+        
+        .heading {
+            color: white;
+            font-family: 'Sedgwick Ave Display', cursive;
+            font-size: 10vw;
+            letter-spacing: 20px;
+            color: rgb(0, 255, 170);
+            padding-top: 20px;
+            font-family: 'Cabin Sketch', cursive;
+        }
+
+        .data-rows {
+            padding-top: 10px;
+        }
+
+        .textfield-labels {
+            color: white;
+            font-weight: 600;
+        }
+
+        .textfield {
+            border: 5px solid black;
+        }
+
+        .signup-heading {
+            color: white;
+            font-family: 'Dosis', sans-serif;
+            letter-spacing: 20px;
+        }
+
+        .bored {
+            height: 300px;
+            width: 300px;
+        }
+
+        .font-icons {
+            color: white;
+            font-size: 50px;
+        }
+
+        .description {
+            color: white;
+            font-weight: 600;
+        }
+
+        .first-description {
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid rgb(117, 19, 19);
+            animation-name: first-block;
+            animation-duration: 6s;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+        }
+
+        .left-column {
+            padding: 20px;
+        }
+
+         ::-moz-placeholder {
+            text-align: center;
+        }
+
+         ::-webkit-input-placeholder {
+            text-align: center;
+        }
+
+        @keyframes first-block {
+            from {
+                background-color: rgba(255, 0, 0, 0);
+            }
+            to {
+                background-color: rgb(117, 19, 19);
+            }
+        }
+
+#base {
+	background-image: url('../image/th.jpeg');
+	background-size: cover;
+	background-position: center center;
+	position: relative;
+	top: 0;
+	bottom: 0;
+	height: 100vh;
+	z-index: -10;
+}
+
+#base-overlay{
+
+}

@@ -1,0 +1,39 @@
+{% extends "base.html"%}
+{% block title%} Purchase Order{% endblock %}
+
+
+{% block content %}
+<div>
+    <h1>Purchase order Line</h1>
+</div>
+<ul>
+<table border="1">
+     <tr>
+     	<th>ID</th>
+     	<th>Name</th>
+     	<th>Quantity</th>
+     	<th>Quantity Invoiced</th>
+     	<th>Price</th>
+     	<th>Subtotal</th>
+     	<th>total</th>
+     	<th>Order Id</th>
+     	
+     </tr>
+     <tr>
+     {% for purchase in purchases %}
+     <td> {{purchase.id}} </td>
+     <td> {{purchase.name}} </td>
+     <td> {{purchase.product_qty}} </td>
+     <td> {{purchase.qty_invoiced}} </td>
+     <td> {{purchase.price_unit}} </td>
+     <td> {{purchase.price_subtotal}} </td>
+     <td> {{purchase.price_total}} </td>
+     <td> {{purchase.order_id}} </td>
+     
+     <td><a href="#" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+     <td><a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+     </tr>
+{% endfor %}
+</table>
+</ul>
+{% endblock %}
