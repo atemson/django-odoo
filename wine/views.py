@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.core.urlresolvers import reverse_lazy
-from django.shortcuts import render
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from . import models
@@ -12,14 +11,32 @@ from django.template.loader import get_template
 from django.http import HttpResponse
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import ListView, DeleteView
+from django.views.generic import ListView, DeleteView, DetailView
 import xmlrpclib
 import datetime
 import xmlrpclib, httplib
 from django.views.decorators.csrf import csrf_protect
+from wine.forms import CustomerForm
+from django.views.generic.edit import FormView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.forms import ModelForm
+from django.core.urlresolvers import reverse
+from django.conf.urls.static import static
+from django.views.decorators.csrf import csrf_exempt
+from decimal import Decimal
+from xmlrpclib import Marshaller
 
-
+import json
 # Create your views here.
+
+
+def dump_decimal(value, write):
+    write("<value><double>")
+    write(str(value))
+    write("</double></value>\n")
+
+Marshaller.dispatch[Decimal] = dump_decimal
+
 
 url = "http://winetest.polarwin.cn/"
 
@@ -42,27 +59,38 @@ for partner in partners:
 
 
 '''
- CUSTOMER / PARTNER PAGE (MODULE)
+ ************************CUSTOMER / PARTNER PAGE (MODULE)*************************************
 
 '''
+class CustomerForm(ModelForm):
+
+
+    url = "http://winetest.polarwin.cn/"
+    db = 'newera'
+    username = 'admin'
+    password = 'admin'
+    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
+    uid = common.authenticate(db, username, password, {})
+    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    model = 'res.partner'
+
+    fields = ['name', 'city', 'email', 'phone']
 
 
 
-def customer(request):    
+def customer(request):
     t = get_template('customer.html')
     html = t.render({'partners':partners})
     return HttpResponse(html)
-    # return render(request,'templates/index.html',{'partners':partners})
-    # html = "<html><body><h1>Odoo Partner</h1>"
-    # for partner in partners:
 
-    #     print(partner)
-    #     name = partner['name'].encode("utf-8")
-    #     html += "<div>"+name+": "+str(partner['city'])+" "+str(partner['email'])+" "+str(partner['phone'])+" "+str(partner['id'])+"</div>"
-    #     html += "</body></html>"
-    #     print("---------------------")
-    #     # return HttpResponse(partner)
-    #     return HttpResponse(html)
+def customer_list(request, template_name='customer_list.html'):
+    partner = 'res.partner'.objects.all()
+    data = {}
+    data['object_list'] = partner
+    return render(request, template_name, data)
+
+'''
 def updatec(request, id):
     url = "http://winetest.polarwin.cn/"
     db = 'newera'
@@ -80,23 +108,7 @@ def updatec(request, id):
     partner.phone = request.POST.get('phone')
     partner.save()
     return HttpResponse('updated')
-
-def deletec(request, id):
-    url = "http://winetest.polarwin.cn/"
-    db = 'newera'
-    username = 'admin'
-    password = 'admin'
-    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
-    uid = common.authenticate(db, username, password, {})
-    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
-    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
-    model = 'res.partner'
-    #partners = model.objects.get(pk=id)
-    partners = get_object_404(model,pk=partner.id)    
-    partner.delete()
-    return HttpResponse('deleted')
-    
-
+'''
 class CustomerDelete(DeleteView):
     url = "http://winetest.polarwin.cn/"
     db = 'newera'
@@ -107,20 +119,22 @@ class CustomerDelete(DeleteView):
     models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     model = 'res.partner'
-    template_name ='templates/delete.html'
-    Context_object_name = 'partner'
+    #template_name ='templates/customer.html'
+    #Context_object_name = 'partner'
     success_url = reverse_lazy('customer')
-    
-    '''   
+
+    def get_success_url(self):
+        return reverse('customer')
+    '''
     def delete(request, id):
         partners = model.objects.filter(id=id).delete()
-
+        partners = models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[id]])
         for partner in partners:
             partner.delete()
-            return HttpResponse('deleted')   
-    '''   
-
-def delete(request):  
+            return HttpResponse('deleted')
+    '''
+@csrf_exempt
+def delete(request):
     url = "http://winetest.polarwin.cn/"
     db = 'newera'
     username = 'admin'
@@ -130,25 +144,42 @@ def delete(request):
     models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     model = 'res.partner'
+    
+    names = partner['id']
+    #ids = models.execute_kw(db, uid, password,
+    ids = sock.execute(db, uid, password,
+                'res.partner', 'search', [['id', '=', "names"]],)
 
-    t = get_template('delete.html')
-    html = t.render({'partners':partners})
-    return HttpResponse(html)
+    #results = models.execute_kw(db, uid, password, 'res.partner', 'unlink', ids)
+    results = sock.execute(db, uid, password, 'res.partner', 'unlink', ids)
+    print ids    
+        #models.execute_kw(db, uid, password, model, 'unlink', [[id]])
+        #return render(request,'customer.html',{'partners':partners})
+    #t = get_template('delete.html')
+    #html = t.render({'partners':partners})
+   #return HttpResponse(html)
+    #partners = model.objects.filter().delete()
+
+    #t = get_template('delete.html')
+    #html = t.render({'partners':partners})
+    #for partner in partners:
+        #partner = model.objects.get(pk=id).delete()
+        #return render(request,'delete.html',{'partners':partners})
 
 
 
 '''
- HOME / INDEX PAGE (MODULE)
+ ***************************HOME / INDEX PAGE (MODULE)****************************************
 
 '''
-
+@csrf_exempt
 def index(request):
-   
+
     #partners = model.objects.all()
     view = "index"
     t = get_template('index.html')
     html = t.render({'name':view})
-    return HttpResponse(html)    
+    return HttpResponse(html)
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -168,13 +199,12 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 '''
- PRODUCT PAGE (MODULE)
+ ***************************PRODUCT PAGE (MODULE)************************************
 
 '''
-
-def product(request):  
+@csrf_exempt
+def product(request):
     url = "http://winetest.polarwin.cn/"
-    
     db = 'newera'
     username = 'admin'
     password = 'admin'
@@ -190,21 +220,80 @@ def product(request):
     {'fields': ['name', 'product_color','product_vintage','product_grade','type','list_price'], 'limit': 500})
     for product in products:
         print product['id'], product['name'], product['product_color'], product['product_vintage'], product['product_grade'], product['type'], product['list_price']
-  
+
         t = get_template('product.html')
         html = t.render({'products':products})
         return HttpResponse(html)
 
-
-
-
-'''
- SALE ORDER PAGE (MODULE)
-
-'''
-def sale(request):  
+class ProductList(ListView):
     url = "http://winetest.polarwin.cn/"
-    
+    db = 'newera'
+    username = 'admin'
+    password = 'admin'
+    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
+    uid = common.authenticate(db, username, password, {})
+    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    model ='product.template'
+
+class ProductView(DetailView):
+    url = "http://winetest.polarwin.cn/"
+    db = 'newera'
+    username = 'admin'
+    password = 'admin'
+    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
+    uid = common.authenticate(db, username, password, {})
+    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    model = 'product.template'
+
+class ProductCreate(CreateView):
+    url = "http://winetest.polarwin.cn/"
+    db = 'newera'
+    username = 'admin'
+    password = 'admin'
+    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
+    uid = common.authenticate(db, username, password, {})
+    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    model = 'product.template'
+    fields = ['name', 'product_color','product_vintage','product_grade','type','list_price']
+    success_url = reverse_lazy('product_list')
+
+class ProductUpdate(UpdateView):
+    url = "http://winetest.polarwin.cn/"
+    db = 'newera'
+    username = 'admin'
+    password = 'admin'
+    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
+    uid = common.authenticate(db, username, password, {})
+    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    model = 'product.template'
+    fields = ['name', 'product_color','product_vintage','product_grade','type','list_price']
+    success_url = reverse_lazy('product_list')
+
+class ProductDelete(DeleteView):
+    url = "http://winetest.polarwin.cn/"
+    db = 'newera'
+    username = 'admin'
+    password = 'admin'
+    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
+    uid = common.authenticate(db, username, password, {})
+    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    model = 'product.template'
+    success_url = reverse_lazy('product_list')
+
+
+'''
+ **************************************SALE ORDER PAGE (MODULE)******************************
+
+'''
+@csrf_exempt
+def sale(request):
+    url = "http://winetest.polarwin.cn/"
+
     db = 'newera'
     username = 'admin'
     password = 'admin'
@@ -220,21 +309,21 @@ def sale(request):
     {'fields': ['name', 'product_uom_qty','price_unit','price_subtotal', 'price_total','product_id' ], 'limit': 500})
     for sale in sales:
         print sale['id'], sale['name'], sale['product_uom_qty'], sale['price_unit'], sale['price_subtotal'], sale['price_total'], sale['product_id']
-  
+
         t = get_template('sales.html')
         html = t.render({'sales':sales})
-        return HttpResponse(html)                  
+        return HttpResponse(html)
 
 
 
 
 '''
- PURCHASE ORDER PAGE (MODULE)
-
+ ********************************PURCHASE ORDER PAGE (MODULE)************************************
 '''
-def purchase(request):  
+@csrf_exempt
+def purchase(request):
     url = "http://winetest.polarwin.cn/"
-    
+
     db = 'newera'
     username = 'admin'
     password = 'admin'
@@ -250,10 +339,51 @@ def purchase(request):
     {'fields': ['name', 'product_qty','price_unit','qty_invoiced','order_id', 'price_subtotal', 'price_total' ], 'limit': 500})
     for purchase in purchases:
         print purchase['id'], purchase['name'], purchase['product_qty'], purchase['qty_invoiced'],purchase['price_unit'], purchase['price_subtotal'], purchase['price_total'], purchase['order_id']
-  
+
         t = get_template('purchase.html')
         html = t.render({'purchases':purchases})
-        return HttpResponse(html)                          
+        return HttpResponse(html)
 
 
 
+
+
+
+'''
+*******************************************************************************************
+'''
+
+class CustomerCreate(CreateView):
+    url = "http://winetest.polarwin.cn/"
+    db = 'newera'
+    username = 'admin'
+    password = 'admin'
+    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
+    uid = common.authenticate(db, username, password, {})
+    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    model = 'res.partner'
+
+    fields = ['name']
+    fields = ['city']
+    fields = ['email']
+    fields = ['phone']
+    success_url = reverse_lazy('customer')
+
+class CustomerUpdate(UpdateView):
+    url = "http://winetest.polarwin.cn/"
+    db = 'newera'
+    username = 'admin'
+    password = 'admin'
+    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
+    uid = common.authenticate(db, username, password, {})
+    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    model = 'res.partner'
+
+    fields = ['name']
+    fields = ['city']
+    fields = ['email']
+    fields = ['phone']
+    template_name_suffix = '_update_form'
+    success_url = reverse_lazy('customer')

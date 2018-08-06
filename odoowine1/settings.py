@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'wine',
     'rest_framework',
+    'Djangodoo',
 ]
 
 MIDDLEWARE = [
@@ -83,6 +84,14 @@ DATABASES = {
     }
 }
 
+ODOO_HOST = {
+    'USER': 'admin',
+    'PASSWORD': 'admin',
+    'HOST': 'http://winetest.polarwin.cn/',
+    'PORT': 8069,
+    'DB': 'newera'
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -125,3 +134,6 @@ DEBUG = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'static/')
+
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#MEDIA_URL = '/media/'

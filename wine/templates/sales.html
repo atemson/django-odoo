@@ -10,7 +10,7 @@
     <h1>Sales Order Line</h1>
 </div>
 <ul>
-<table border="1">
+<table border="1" class="table">
      <tr>
      	<th>ID</th>
      	<th>Name</th>
@@ -19,7 +19,7 @@
      	<th>Subtotal</th>
      	<th>total</th>
      	<th>product ID</th>
-     	
+
      </tr>
      <tr>
      {% for sale in sales %}
@@ -30,7 +30,7 @@
      <td> {{sale.price_subtotal}} </td>
      <td> {{sale.price_total}} </td>
      <td> {{sale.product_id}} </td>
-     
+
      <td><a href="#" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
      <td><a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
      </tr>

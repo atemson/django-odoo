@@ -1,19 +1,32 @@
+{% load staticfiles %}
+{% load static %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+
+<head>
 <link href="https://font.googleapis.com/css?family=Satisfy" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
- {% load static %}
-<html lang="en">
-
-<head>
+<script type="text/javascript" src=" http://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <style type="text/css">
         body {
-          background: url({% static "images/th.jpeg" %});
+          background: url({% static "../static/images/index.jpeg" %});
           background-size: cover;
-        }
+          background-color: rgba(255);
+          color: white;
+          font-family: 'Dosis', sans-serif;
+          
 
+        }
+       
+        .foot {
+        	text-decoration: comic ;
+        	text-align: left;
+
+        }
         .heading {
             color: white;
             font-family: 'Sedgwick Ave Display', cursive;
@@ -89,6 +102,36 @@
             }
         }
     </style>
+
+<script type="text/javascript">
+    	
+function delete(post_primary_key){
+    if (confirm('are you sure you want to remove this partner?')==true){
+        $.ajax({
+            url : "delete/", // the endpoint
+            type : "DELETE", // http method
+            data : { partnerpk : post_primary_key }, // data sent with the delete request
+            success : function(json) {
+                // hide the post
+              $('#post-'+post_primary_key).hide(); // hide the post on success
+              console.log("post deletion successful");
+            },
+
+            error : function(xhr,errmsg,err) {
+                // Show an error
+                $('#results').html("<div class='alert-box alert radius' data-alert>"+
+                "Oops! We have encountered an error. <a href='#' class='close'>&times;</a></div>"); // add error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    } else {
+        return false;
+    }
+};
+
+    </script>
+
+
    <nav class="navbar navbar-inverse">
 	<div class="container-fluid full">
 
@@ -140,11 +183,11 @@
 <body>
    <div>
       <div>
-         <h1>Odoo Wine</h1>
+         <h1 align="center" class="odoo">Odoo Wine</h1>
          {% block content %}{% endblock %}
          {% block footer %}
         <hr>
-        <p>Thanks for visiting</p>
+        <p class="foot">Thanks for visiting</p>
        {% endblock %}
       </div>
    </div>

@@ -10,11 +10,13 @@
     <h1>Products in store</a></h1>
 </div>
 <ul>
-<table border="1">
+<table border="1" class="table">
      <tr>
      	<th>ID</th>
      	<th>Name</th>
-     	<th>Description</th>
+     	<th>Color</th>
+     	<th>Vintage</th>
+     	<th>Grade</th>
      	<th>Type</th>
      	<th>Price</th>
 
@@ -23,7 +25,9 @@
      {% for product in products %}
      <td> {{product.id}} </td>
      <td> {{product.name}} </td>
-     <td> {{product.description}} </td>
+     <td> {{product.product_color}} </td>
+     <td> {{product.product_vintage}} </td>
+     <td> {{product.product_grade}} </td>
      <td> {{product.type}} </td>
      <td> {{product.list_price}} </td>
      <td><a href="#" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>

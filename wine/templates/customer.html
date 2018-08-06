@@ -3,15 +3,16 @@
 
 {% block title%} Customer Contact List {% endblock %}
 
-
 {% block content %}
+
+
 <div >
 
     <h1><b>Customer List</b></h1>
     <p></p>
 </div>
 <ul>
-<table border="1">
+<table border="1" class="table table-list">
      <tr>
      	<th>ID</th>
      	<th>Name</th>
@@ -22,12 +23,23 @@
      </tr>
      <tr>
      {% for partner in partners %}
-     <td> {{partner.id}} </td>
+     <td id="partner.id"> {{partner.id}} </td>
      <td> {{partner.name}} </td>
      <td> {{partner.city}} </td>
      <td> {{partner.email}} </td>
      <td> {{partner.phone}} </td>
-     <td><a href=" {% url 'delete' %}" class="btn btn-danger" role="button" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+  
+     <td><a href=" {% url 'delete' %}" class="btn btn-danger" role="button" type="object" name="unlink" confirm="Are you sure you want to delete" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+   
+     <!-- 
+     <td>
+        <form method="POST" action="{% url 'delete' %}">
+         {% csrf_token%} <input type="submit" value="Delete" class="btn btn-danger">
+         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+        </form>
+     </td>
+     -->
+
      <td><a href="#" class="btn btn-primary" role="button" ><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
      </tr>
 {% endfor %}

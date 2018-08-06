@@ -3,17 +3,19 @@
 
 {% block title%}{% endblock %}
 
+
 {% block content %}
-<div>  
-<!-- <p>dsfas</p> -->
+<div>
+<!-- <p>dsfas</p>
 {% for partner in partners %}
- <form method="post">
+<p>Are you sure you want to delete "{{partner.name}}"?</p>
+<td><a href="{% url 'delete' partner.id%}">Delete</a></td>
+-->
+ <form method="post" action="{% url 'delete'%}">
  	{% csrf_token%}
  	<p>Are you sure you want to delete "{{partner.name}}"?</p>
- 	<input type="submit" value="YES" />
-
+ 	<input type="submit" value="YES" name="unlink" />
  </form>
-{% endfor %} 
+{% endfor %}
 </div>
 {% endblock %}
-
