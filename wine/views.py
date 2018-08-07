@@ -76,7 +76,7 @@ class CustomerForm(ModelForm):
     model = 'res.partner'
 
     fields = ['name', 'city', 'email', 'phone']
-
+    
 
 
 def customer(request):
@@ -90,7 +90,7 @@ def customer_list(request, template_name='customer_list.html'):
     data['object_list'] = partner
     return render(request, template_name, data)
 
-'''
+
 def updatec(request, id):
     url = "http://winetest.polarwin.cn/"
     db = 'newera'
@@ -108,31 +108,9 @@ def updatec(request, id):
     partner.phone = request.POST.get('phone')
     partner.save()
     return HttpResponse('updated')
-'''
-class CustomerDelete(DeleteView):
-    url = "http://winetest.polarwin.cn/"
-    db = 'newera'
-    username = 'admin'
-    password = 'admin'
-    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
-    uid = common.authenticate(db, username, password, {})
-    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
-    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
-    model = 'res.partner'
-    #template_name ='templates/customer.html'
-    #Context_object_name = 'partner'
-    success_url = reverse_lazy('customer')
 
-    def get_success_url(self):
-        return reverse('customer')
-    '''
-    def delete(request, id):
-        partners = model.objects.filter(id=id).delete()
-        partners = models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[id]])
-        for partner in partners:
-            partner.delete()
-            return HttpResponse('deleted')
-    '''
+
+
 @csrf_exempt
 def delete(request):
     url = "http://winetest.polarwin.cn/"
@@ -144,28 +122,62 @@ def delete(request):
     models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     model = 'res.partner'
-    
-    names = partner['id']
-    #ids = models.execute_kw(db, uid, password,
-    ids = sock.execute(db, uid, password,
-                'res.partner', 'search', [['id', '=', "names"]],)
+    partners = models.execute_kw(db, uid, password,
+    'res.partner', 'search_read',
+    [[]],
+    {'fields': ['name', 'city','email','phone'], 'limit': 5})
+    for partner in partners:
+        '''
+        models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[id]])
+        return HttpResponse("Partner deleted")    
+        print id
+        '''
+        id = partner['id']
+        if id:
+            print partner['id']
+        else:
+            results = sock.execute_kw(db, uid, password, 'res.partner', 'unlink', [[id]])
 
-    #results = models.execute_kw(db, uid, password, 'res.partner', 'unlink', ids)
-    results = sock.execute(db, uid, password, 'res.partner', 'unlink', ids)
-    print ids    
-        #models.execute_kw(db, uid, password, model, 'unlink', [[id]])
-        #return render(request,'customer.html',{'partners':partners})
-    #t = get_template('delete.html')
-    #html = t.render({'partners':partners})
-   #return HttpResponse(html)
-    #partners = model.objects.filter().delete()
+        return HttpResponse("Partner deleted")
+        
+        '''
+        names = partner['name']
 
-    #t = get_template('delete.html')
-    #html = t.render({'partners':partners})
-    #for partner in partners:
-        #partner = model.objects.get(pk=id).delete()
-        #return render(request,'delete.html',{'partners':partners})
+        args = [[['id','=',partner['id']]]]
+        ids = models.execute_kw(db, uid, password,
+                'res.partner', 'search', [[['name','=',partner['name']]]])
+        #ids = ids[0] if ids else False
+        if ids:
+            ids = ids[0]
+            print ids
+            
+        else:
+        #ids=[121]
+           results = sock.execute_kw(db, uid, password, 'res.partner', 'unlink', [[ids]])
+        '''
+        
+        #return HttpResponse("Partner deleted")
+    #results = sock.execute(db, uid, password, 'res.partner', 'unlink', ids)
+      
 
+def createcustomer(request):
+    url = "http://winetest.polarwin.cn/"
+    db = 'newera'
+    username = 'admin'
+    password = 'admin'
+    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
+    uid = common.authenticate(db, username, password, {})
+    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
+    model = 'res.partner'
+    partner = {}
+    fields = ['name']
+    fields = ['city']
+    fields = ['email']
+    fields = ['phone']
+    success_url = reverse_lazy('customer')
+    partner_id = sock.execute(db, uid, password, 'res.partner', 'create', partner)
+    print partner_id
 
 
 '''
@@ -353,22 +365,7 @@ def purchase(request):
 *******************************************************************************************
 '''
 
-class CustomerCreate(CreateView):
-    url = "http://winetest.polarwin.cn/"
-    db = 'newera'
-    username = 'admin'
-    password = 'admin'
-    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
-    uid = common.authenticate(db, username, password, {})
-    models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
-    sock = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
-    model = 'res.partner'
 
-    fields = ['name']
-    fields = ['city']
-    fields = ['email']
-    fields = ['phone']
-    success_url = reverse_lazy('customer')
 
 class CustomerUpdate(UpdateView):
     url = "http://winetest.polarwin.cn/"

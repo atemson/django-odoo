@@ -19,6 +19,9 @@ urlpatterns = [
     url(r'^sale/$', views.sale, name='sale'),
     url(r'^purchase/$', views.purchase, name='purchase'),
     url(r'^delete/$', views.delete, name='delete'),
+    url(r'^create/$', views.createcustomer, name='createcustomer'),
+    url(r'^create/$', views.CustomerForm, name='createcustomerform'),
+
     #url(r'^update/$', views.CustomerUpdate.as_view(), name='update'),
     # url(r'^delete/(?P<pk>[0-9]+)/$', views.delete, name='delete_view'),
     #url(r'^delete/$', views.delete, name='delete1'),

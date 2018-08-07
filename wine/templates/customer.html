@@ -12,7 +12,10 @@
     <p></p>
 </div>
 <ul>
-<table border="1" class="table table-list">
+<a href="{% url 'createcustomerform' %}" class="btn btn-primary" role="button"  ><span class="glyphicon glyphicon-pencil" aria-hidden="true" >Create New Customer</span></a>
+
+<p></p>
+<table border="1" class="table table-list" align="left">
      <tr>
      	<th>ID</th>
      	<th>Name</th>
@@ -24,12 +27,12 @@
      <tr>
      {% for partner in partners %}
      <td id="partner.id"> {{partner.id}} </td>
-     <td> {{partner.name}} </td>
-     <td> {{partner.city}} </td>
-     <td> {{partner.email}} </td>
-     <td> {{partner.phone}} </td>
+     <td id="partner.name"> {{partner.name}} </td>
+     <td id="partner.city"> {{partner.city}} </td>
+     <td id="partner.email"> {{partner.email}} </td>
+     <td id="partner.phone"> {{partner.phone}} </td>
   
-     <td><a href=" {% url 'delete' %}" class="btn btn-danger" role="button" type="object" name="unlink" confirm="Are you sure you want to delete" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+     <td><a href=" {% url 'delete'  %}" class="btn btn-danger" role="button" type="object" name="unlink" confirm="Are you sure you want to delete" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
    
      <!-- 
      <td>

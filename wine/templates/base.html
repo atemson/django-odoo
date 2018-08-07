@@ -4,13 +4,15 @@
 <html lang="en">
 
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel=”stylesheet” id=”font-awesome-css” href=”//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css” type=”text/css” media=”screen”>
 <link href="https://font.googleapis.com/css?family=Satisfy" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">  
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script type="text/javascript" src=" http://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
 <style type="text/css">
         body {
           background: url({% static "../static/images/index.jpeg" %});
@@ -19,7 +21,6 @@
           color: white;
           font-family: 'Dosis', sans-serif;
           
-
         }
        
         .foot {
@@ -103,34 +104,45 @@
         }
     </style>
 
-<script type="text/javascript">
-    	
-function delete(post_primary_key){
-    if (confirm('are you sure you want to remove this partner?')==true){
-        $.ajax({
-            url : "delete/", // the endpoint
-            type : "DELETE", // http method
-            data : { partnerpk : post_primary_key }, // data sent with the delete request
-            success : function(json) {
-                // hide the post
-              $('#post-'+post_primary_key).hide(); // hide the post on success
-              console.log("post deletion successful");
-            },
-
-            error : function(xhr,errmsg,err) {
-                // Show an error
-                $('#results').html("<div class='alert-box alert radius' data-alert>"+
-                "Oops! We have encountered an error. <a href='#' class='close'>&times;</a></div>"); // add error to the dom
-                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-            }
-        });
-    } else {
-        return false;
-    }
-};
-
-    </script>
-
+<style>
+.scroll-top-wrapper {
+    position: fixed;
+	opacity: 0;
+	visibility: hidden;
+	overflow: hidden;
+	text-align: center;
+	z-index: 99999999;
+    background-color: #777777;
+	color: #eeeeee;
+	width: 50px;
+	height: 48px;
+	line-height: 48px;
+	right: 30px;
+	bottom: 30px;
+	padding-top: 2px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+	-webkit-transition: all 0.5s ease-in-out;
+	-moz-transition: all 0.5s ease-in-out;
+	-ms-transition: all 0.5s ease-in-out;
+	-o-transition: all 0.5s ease-in-out;
+	transition: all 0.5s ease-in-out;
+}
+.scroll-top-wrapper:hover {
+	background-color: #888888;
+}
+.scroll-top-wrapper.show {
+    visibility:visible;
+    cursor:pointer;
+	opacity: 1.0;
+}
+.scroll-top-wrapper i.fa {
+	line-height: inherit;
+}
+ 
+</style>
 
    <nav class="navbar navbar-inverse">
 	<div class="container-fluid full">
@@ -185,11 +197,48 @@ function delete(post_primary_key){
       <div>
          <h1 align="center" class="odoo">Odoo Wine</h1>
          {% block content %}{% endblock %}
-         {% block footer %}
-        <hr>
-        <p class="foot">Thanks for visiting</p>
+      </div>
+      <div>
+       <!-- The scroll to top feature -->
+    
+      <div class="scroll-top-wrapper ">
+          <span class=”scroll-top-wrapper” style=”display: inline;>
+  	      <i class="fa fa-4x fa-arrow-circle-up"></i>
+          </span> 
+      </div>
+      	{% block footer %}
+        <div class="container">
+            <small>© Copyright 2018.<a href="#">@NewEra Technology</a></small>
+        </div>
        {% endblock %}
       </div>
    </div>
+
+<script type="text/javascript" src=" http://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+ 
+$(function(){
+ 
+	$(document).on( 'scroll', function(){
+ 
+		if ($(window).scrollTop() > 100) {
+			$('.scroll-top-wrapper').addClass('show');
+		} else {
+			$('.scroll-top-wrapper').removeClass('show');
+		}
+	});
+ 
+	$('.scroll-top-wrapper').on('click', scrollToTop);
+});
+ 
+function scrollToTop() {
+	verticalOffset = typeof(verticalOffset) != 'undefined' ? verticalOffset : 0;
+	element = $('body');
+	offset = element.offset();
+	offsetTop = offset.top;
+	$('html, body').animate({scrollTop: offsetTop}, 500, 'linear');
+}
+</script>
 </body>
 </html>
